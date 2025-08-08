@@ -1,0 +1,2 @@
+[console_scripts]
+mcp-datajud = mcp_datajud.cli:main
