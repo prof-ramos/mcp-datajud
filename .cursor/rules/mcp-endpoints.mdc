@@ -1,0 +1,19 @@
+---
+alwaysApply: false
+description: Endpoints MCP (Smithery) expostos pelo servidor para descoberta e chamada de ferramentas.
+---
+# Endpoints MCP (Smithery)
+
+- `GET /api/mcp/tool/list`
+  - Resposta: `{ "tools": Array<Tool> }`
+  - `Tool`: `{ tool_name: string, category: string, description: string, input_schema: object }`
+
+- `POST /api/mcp/tool/call`
+  - Corpo: `{ "toolName": string, "toolArgs"?: object, "sessionId"?: string }`
+  - Resposta: `{ "result": any }`
+  - Erros: HTTP 400 com `{ "detail": { "error": string } }` quando a execução falhar.
+
+- Observações
+  - O servidor carrega a `DATAJUD_API_KEY` do ambiente.
+  - A lista de tribunais pode ser reduzida via `DATAJUD_TRIBUNAIS` (CSV).
+  - O schema de entrada aceita parâmetros Elasticsearch (query, sort, size, from, search_after) e extras do cliente (pagina, buscar_todas_paginas).

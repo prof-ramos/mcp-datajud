@@ -1,0 +1,15 @@
+integration:
+  platform: "PDPJ-Br"
+  authentication: "Keycloak SSO"
+  services:
+    - name: "pje-integration"
+      endpoint: "/pje/api/v1/processos"
+    - name: "eproc-connector"
+      endpoint: "/eproc/api/processos"
+    - name: "projud-adapter"
+      endpoint: "/projud/api/search"
+
+monitoring:
+  metrics: "Prometheus + Grafana"
+  tracing: "Jaeger/OpenTelemetry"
+  logs: "ELK Stack"

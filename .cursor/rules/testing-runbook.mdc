@@ -1,0 +1,64 @@
+---
+alwaysApply: false
+description: Runbook de instalação, testes locais, CLI e endpoints HTTP do MCP DataJUD.
+---
+# Runbook de Testes/Execução
+
+## Ambiente local
+
+```bash
+python3 -m venv .venv && . .venv/bin/activate
+pip install -e .
+export DATAJUD_API_KEY="SUA_CHAVE"
+```
+
+## CLI
+
+- Listar ferramentas:
+
+```bash
+mcp-datajud list-tools
+```
+
+- Executar ferramenta com parâmetros JSON:
+
+```bash
+mcp-datajud execute tjsp.buscar_processos --params '{"query":{"match_all":{}},"size":1}'
+```
+
+## Server FastAPI
+
+- Subir servidor:
+
+```bash
+uvicorn mcp_datajud.server:app --host 0.0.0.0 --port 8000
+```
+
+- Endpoints MCP (Smithery):
+  - `GET /api/mcp/tool/list` → `{ tools: [...] }`
+  - `POST /api/mcp/tool/call` → `{ result: ... }`
+- Exemplos:
+
+```bash
+curl -s http://127.0.0.1:8000/api/mcp/tool/list | jq '.tools[0:3]'
+curl -s -X POST http://127.0.0.1:8000/api/mcp/tool/call \
+  -H 'Content-Type: application/json' \
+  -d '{"toolName":"tjsp.buscar_processos","toolArgs":{"query":{"match_all":{}},"size":1}}'
+```
+
+## Docker
+
+```bash
+docker build -t mcp-datajud:dev .
+docker run --rm -e DATAJUD_API_KEY="$DATAJUD_API_KEY" -p 8000:8000 mcp-datajud:dev
+```
+
+## Kubernetes (exemplo)
+
+- Manifesto: `[k8s-govcloud-deployment.yaml](mdc:k8s-govcloud-deployment.yaml)`
+- Certifique-se de criar o Secret `datajud-secret` com a chave `api-key`.
+
+## Observações
+
+- Para volumes grandes, prefira `search_after` no corpo ES; `buscar_todas_paginas` usa iteração com `from/size`.
+- Mensagens de erro são sempre em PT-BR e estruturadas.

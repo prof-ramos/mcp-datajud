@@ -1,0 +1,14 @@
+---
+globs: *.py
+---
+# Guia de Estilo Python (MCP DataJUD)
+
+- Use nomes descritivos (sem abreviações), funções com verbos, variáveis com substantivos.
+- Tipagem explícita em APIs públicas; evite `Any` quando possível.
+- Fluxo: prefira guard clauses e retorno antecipado; evite aninhamento profundo (>2 níveis).
+- Erros: levante exceções específicas (`AuthenticationError`, `APIRateLimitError`, etc.)
+- Comentários: curtos, explicando o "porquê"; evite comentários triviais.
+- Formatação: multilinhas para expressões longas; não reformatar código não relacionado.
+- Logging: use logger JSON (`logging_config.get_json_logger`) com campos `tool_name`, `params`, `duration_ms` quando fizer sentido.
+- Limitação de taxa: use `TokenBucketRateLimiter` para chamadas HTTP intensas.
+- Padrões MCP: mantenha `list_tools()` e `execute_tool()` estáveis e em PT-BR nas mensagens de erro.

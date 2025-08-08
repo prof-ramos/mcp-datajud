@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mcp-datajud
+  namespace: judicial-apis
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mcp-datajud
+  template:
+    metadata:
+      labels:
+        app: mcp-datajud
+    spec:
+      containers:
+      - name: mcp-datajud
+        image: registry.serpro.gov.br/mcp-datajud:latest
+        env:
+        - name: DATAJUD_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: datajud-secret
+              key: api-key
+        - name: ENVIRONMENT
+          value: "production-govcloud"
+        ports:
+        - containerPort: 8000
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10

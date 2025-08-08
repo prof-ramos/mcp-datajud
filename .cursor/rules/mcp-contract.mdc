@@ -1,0 +1,40 @@
+---
+alwaysApply: false
+description: Contrato MCP de listagem e execução de ferramentas no cliente Python.
+---
+# Contrato MCP (Cliente Python)
+
+## list_tools()
+
+Retorna `Array<Tool>` com metadados legíveis por LLM.
+
+`Tool`:
+
+- `tool_name` (string): nome único com namespace, ex.: `tjsp.buscar_processos`.
+- `category` (string): descrição da categoria (tribunal), ex.: `TJSP`.
+- `description` (string): finalidade da ferramenta (PT-BR).
+- `input_schema` (object): JSON Schema (subset) dos parâmetros aceitos, incluindo campos ES (`query`, `sort`, `size`, `from`, `search_after`) e controles do cliente (`pagina`, `buscar_todas_paginas`).
+
+## execute_tool(tool_name: str, **kwargs)
+
+Executa a ferramenta indicada, roteando para o endpoint correspondente do DataJUD.
+
+- `tool_name`: "categoria.metodo" (ex.: `trt2.buscar_processos`).
+- `kwargs`: parâmetros conforme `input_schema`.
+- Resposta: objeto `dict` com dados retornados pela API (ou `{ "data": ... }`).
+- Erros (PT-BR): `{ "error": string }` para cenários como autenticação inválida, rate limit, recurso não encontrado e parâmetros inválidos.
+
+## Paginação
+
+- `size` e `from` (nativos ES) são suportados.
+- `pagina`: inteiro 1-based (conveniência; converte para `from` internamente).
+- `buscar_todas_paginas`: booleano; quando `true`, itera páginas (ingênuo com `from/size`) e retorna `{ data, pagination }` agregado.
+
+## Exemplos
+
+- Descoberta:
+  - Python: `DataJudClient.list_tools()`
+  - HTTP: `GET /api/mcp/tool/list -> { tools: [...] }`
+- Execução:
+  - Python: `DataJudClient.execute_tool("tjsp.buscar_processos", query={"match_all":{}}, size=5)`
+  - HTTP: `POST /api/mcp/tool/call { "toolName": "tjsp.buscar_processos", "toolArgs": {"query": {"match_all": {}}, "size": 5} }`

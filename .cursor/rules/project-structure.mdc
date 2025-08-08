@@ -1,0 +1,37 @@
+---
+alwaysApply: true
+---
+# Estrutura do Projeto MCP DataJUD
+
+Pontos de entrada e estrutura modular do cliente MCP DataJUD.
+
+- Código-fonte em `[src/mcp_datajud](mdc:src/mcp_datajud)`
+  - Sessão HTTP (Camada de Comunicação): `[src/mcp_datajud/http_client.py](mdc:src/mcp_datajud/http_client.py)`
+  - Parser da API (Camada Analisadora): `[src/mcp_datajud/parser.py](mdc:src/mcp_datajud/parser.py)`
+  - Gerador dinâmico de ferramentas (Metaprogramação): `[src/mcp_datajud/generator.py](mdc:src/mcp_datajud/generator.py)`
+  - Interface MCP (list_tools/execute_tool): `[src/mcp_datajud/client.py](mdc:src/mcp_datajud/client.py)`
+  - CLI: `[src/mcp_datajud/cli.py](mdc:src/mcp_datajud/cli.py)`
+  - Server FastAPI: `[src/mcp_datajud/server.py](mdc:src/mcp_datajud/server.py)`
+  - Exceções: `[src/mcp_datajud/errors.py](mdc:src/mcp_datajud/errors.py)`
+  - Rate limiter: `[src/mcp_datajud/rate_limiter.py](mdc:src/mcp_datajud/rate_limiter.py)`
+  - Logging JSON: `[src/mcp_datajud/logging_config.py](mdc:src/mcp_datajud/logging_config.py)`
+
+- Empacotamento e deploy
+  - Pyproject: `[pyproject.toml](mdc:pyproject.toml)`
+  - Dockerfile: `[Dockerfile](mdc:Dockerfile)`
+  - K8s (exemplo): `[k8s-govcloud-deployment.yaml](mdc:k8s-govcloud-deployment.yaml)`
+  - Integração PDPJ (YAML): `[pdpj-integration.yaml](mdc:pdpj-integration.yaml)`
+
+- Comandos úteis
+  - Instalação dev: `pip install -e .`
+  - CLI listar ferramentas: `mcp-datajud list-tools`
+  - CLI executar: `mcp-datajud execute tjsp.buscar_processos --params '{"query":{"match_all":{}},"size":1}'`
+  - Server local: `uvicorn mcp_datajud.server:app --host 0.0.0.0 --port 8000`
+
+- Variáveis de ambiente
+  - `DATAJUD_API_KEY` (obrigatória para chamadas reais)
+  - `DATAJUD_TRIBUNAIS` (opcional, CSV para limitar tribunais)
+
+- Contratos importantes
+  - MCP: `DataJudClient.list_tools()` e `DataJudClient.execute_tool()`
+  - Endpoints Smithery: `GET /api/mcp/tool/list` e `POST /api/mcp/tool/call` no server FastAPI

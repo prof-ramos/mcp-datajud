@@ -1,0 +1,59 @@
+Metadata-Version: 2.4
+Name: mcp-datajud
+Version: 0.1.0
+Summary: Cliente MCP dinâmico para a API Pública do DataJUD (CNJ)
+Author: Gabriel Ramos
+License: MIT
+Project-URL: Homepage, https://github.com/
+Project-URL: Issues, https://github.com/
+Keywords: datajud,cnj,mcp,llm,elasticsearch,transparencia
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: requests>=2.32.0
+Requires-Dist: click>=8.1.7
+Requires-Dist: fastapi>=0.111.0
+Requires-Dist: uvicorn>=0.30.0
+Provides-Extra: async
+Requires-Dist: httpx>=0.27.0; extra == "async"
+
+# MCP DataJUD (Python)
+
+Cliente MCP dinâmico para a API Pública do DataJUD (CNJ).
+
+## Instalação
+
+```bash
+python -m venv .venv && source .venv/bin/activate
+pip install -e .
+```
+
+## Configuração
+
+Defina a variável `DATAJUD_API_KEY` com sua chave pública.
+
+## CLI
+
+- Listar ferramentas:
+
+```bash
+mcp-datajud list-tools
+```
+
+- Executar uma ferramenta (params como JSON):
+
+```bash
+mcp-datajud execute tjsp.buscar_processos --params '{"query": {"match_all": {}}, "size": 5}'
+```
+
+## Server (opcional)
+
+```bash
+uvicorn mcp_datajud.server:app --host 0.0.0.0 --port 8000
+```
+
+## Código
+
+Arquitetura em camadas: comunicação HTTP, parser, gerador dinâmico, interface MCP.
