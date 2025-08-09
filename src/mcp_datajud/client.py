@@ -43,6 +43,16 @@ class DataJudClient:
 
     # MCP: executa uma ferramenta
     def execute_tool(self, tool_name: str, **kwargs: Any) -> Dict[str, Any]:
+        """Executa uma ferramenta da API DataJUD gerada dinamicamente.
+
+        Args:
+            tool_name: Nome da ferramenta no formato ``categoria.metodo``.
+            **kwargs: Parâmetros a serem enviados à chamada da API.
+
+        Returns:
+            Um ``dict`` com a resposta da API ou um ``dict`` contendo a chave
+            ``error`` com a descrição do problema ocorrido.
+        """
         try:
             if "." not in tool_name:
                 return {"error": "Nome de ferramenta inválido. Use o formato categoria.metodo (ex.: tjsp.buscar_processos)."}

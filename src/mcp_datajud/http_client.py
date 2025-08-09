@@ -46,6 +46,27 @@ class DataJudSession:
         params: Optional[Dict[str, Any]] = None,
         json_body: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
+        """Executa uma requisição HTTP à API DataJUD.
+
+        Respeita o rate limit configurado e realiza retentativas com backoff
+        exponencial para erros de rede e respostas 5xx.
+
+        Args:
+            method: Método HTTP ("GET", "POST", etc.).
+            path: Caminho relativo ao ``base_url``.
+            params: Parâmetros de querystring a serem enviados.
+            json_body: Corpo JSON da requisição.
+
+        Returns:
+            O corpo da resposta já convertido para ``dict`` quando possível ou
+            um ``dict`` contendo o texto bruto em ``{"raw": resp.text}``.
+
+        Raises:
+            APIRateLimitError: Quando o limite de requisições é excedido.
+            AuthenticationError: Para respostas 401 ou 403.
+            NotFoundError: Para respostas 404.
+            APIError: Para outros erros da API ou de rede.
+        """
         url = f"{self.base_url}{path}"
         attempt = 0
         last_exc: Optional[Exception] = None
